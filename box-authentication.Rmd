@@ -1,0 +1,65 @@
+---
+title: "box-authentication"
+output: html_document
+---
+
+> Loading files via Box authentication
+
+If you're using sensitive files that should not be accessed through Box Sync, the following instructions provide a method to access Box via the oauth dance.  The instructions are slightly different for ACCRE vs local, make sure to note the relevant instructions.
+
+# Basic Instructions
+The Boxr package has pretty straightforward instructions for setting up Box access on your local computer.  For more information, see their reference page: https://r-box.github.io/boxr/ .  Many of these instructions are replicated in the next section.  If you're using your own computer, you can feel free to use the steps outlined the Boxr page.  If you're using ACCRE, the instructions below may provide more insight and a better setup experience for you.
+
+# Setting up Box for Apps¶
+## Set up Box Developer
+In order to access your files on Box, you'll need to set up an app. Visit https://developer.box.com/ and click the MyApps button on the upper right hand corner. Sign in using your Vanderbilt email. You'll be taken to single sign on where you'll enter your credentials.
+
+Click the Create New App button. Choose Custom App and then click the User Authentication (Oauth 2.0) radio button. These two selections will enable you to be able to download and access your files without requiring explicit approval from the Enterprise (i.e., Vanderbilt) Box administrator. More information on types of Box apps can be found here: https://developer.box.com/guides/applications/
+
+Give your app a name.
+
+## Configure your app access
+Now that you've created your app, you'll set up the oauth parameters. In the redirect uri box, type `http://localhost`. Make sure the Write all files and folders in Box checkbox is checked since you'll want to download your files. Click the blue Save Changes button. Keep this page open because you'll need the Client ID and Client Secret fields for the next step.
+
+## Create authentication file
+In the main directory of this repo, create a file called `client_oauth.R`. This will contain all of your access credentials. DO NOT check this file into the repo. In this file, you should have the following 3 lines, where `client_id` and `client_secret` are given by the values for your app. Copy and paste them as a string here. An example is shown below with fabricated values for `client_id` and `client_secret`:
+
+```
+client_id <- 'sleirher87837483y42ksj'
+client_secret <- '34878rudhfu3437g73'
+options(httr_oob_default = TRUE)
+```
+
+# Using authentication with your projects
+## Local computer
+If you're setting up Box access on your own local computer, follow the instructions at https://r-box.github.io/boxr/ .  The code will look similar to that of the one below, but the access will be SUBSTANTIALLY more streamlined.
+
+## ACCRE
+If you're using ACCRE, you'll have to jump through a few hoops, but nothing terrible.  First, make sure that you have your `client_oauth.R` file prepared and in the main directory of your repo.  Also, grab the directory ID of your directory of interest.  You can do this by visiting the directory on Box.com.  In the URL of the page, you'll see a string of digits.  This is the ID you'll use below.
+
+The `start authentication` chunk below accesses your Box app, and will open a webpage asking you to input your Box credentials and provide authorization for the app to access your files.  After you give access, the page will redirect to "localhost".  It will look like an error (e.g., Page not Found).  This is OK.  In the url of the page, you'll see that a code has been returned, e.g., `http://localhost/......code=alskdfjlsdfjsldjfl`. Copy the code.  
+
+Open the R studio console if it isn't already opened, and you'll see that a line is waiting for your input of the code you just copied.  Paste the code there and click enter.  Congratulations - you're all ready to read and access your file!  An example of this is shown below.
+
+Note that the code below deviates from the base instructions additionally in that it stores `.boxr-cache` in your repo directory.  Again, never check this into the repo.  This will allow you to use multiple `.boxr-cache` files instead of storing this file in your home directory.
+
+Lastly, after you've populated `.boxr-cache` the first time, you need not run line 50 again with keyword `oob_value` again.  You can comment this line out and use the following line thenceforth.
+
+```{r load packages}
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(tidyverse, boxr)
+```
+
+
+```{r start authentication}
+source('client_oauth.R')
+box_auth(client_id= client_id, client_secret = client_secret, cache='.boxr-cache', oob_value='http://localhost')
+#box_auth(client_id = client_id, client_secret = client_secret, cache='.boxr-cache')
+```
+
+Below is an example of one of the functions which can be performed using the Boxr API.  See more functionality here: https://r-box.github.io/boxr/reference/index.html
+
+```{r example on retrieving file contents of directory}
+box_dir_dict <- box_ls(dir_id = '3847374534234') %>% as_tibble()
+```
+

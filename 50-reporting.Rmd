@@ -1,0 +1,10 @@
+---
+title: "50-reporting"
+output: html_document
+---
+
+Report the results of the project with relevant performance and modeling considerations.  This notebook will contain functions common to all of the explorations in the rest of the 50-series notebooks.
+```{r reporting imports}
+pacman::p_load(vip, tidytext)
+```
+

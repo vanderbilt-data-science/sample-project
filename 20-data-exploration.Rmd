@@ -1,0 +1,12 @@
+---
+title: "20-data-exploration"
+output: html_document
+---
+
+The purpose of this notebook series is for exploratory data analysis (EDA).
+
+```{r shared eda imports}
+#Helpful imports
+pacman::p_load(DataExplorer)
+```
+

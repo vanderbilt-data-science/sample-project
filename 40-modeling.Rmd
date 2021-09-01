@@ -1,0 +1,13 @@
+---
+title: "40-modeling"
+output: html_document
+---
+
+In this notebook, we'll model the data using appropriate methods.  This notebook will contain shared functions for the rest of the series of modeling notebooks.
+
+```{r modeling imports}
+#Helpful imports
+pacman::p_load(tidymodels, usemodels, tictoc, doParallel, doFuture,
+               glmnet, ranger, xgboost, naivebayes, discrim)
+```
+

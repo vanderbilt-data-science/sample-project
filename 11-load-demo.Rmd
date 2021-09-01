@@ -1,0 +1,19 @@
+---
+title: "11-load-demo"
+output:
+  html_notebook:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    number_sections: true
+---
+
+> Loading demo data
+
+This notebook provides a simple template for loading the data, and purling and sourcing the common functions found in 10.  The purled R script should be deleted during development so as to ensure that this file is not versioned and used while the original Rmd receives relevant changes.  The header also demonstrates a nice format for the printed html document.
+
+```{r import 10-base functions}
+source(knitr::purl('10-load-data.Rmd'))
+fs::file_delete('10-load-data.R')
+```
+
